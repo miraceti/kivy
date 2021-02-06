@@ -1,0 +1,44 @@
+BoxLayout:
+    orientation: "vertical"
+    size: root.width, root.height
+
+    Label:
+        id: time
+        text: "[b]00[/b]:00:00"
+        font_size: 60
+        #bold: True
+        markup: True
+
+    BoxLayout:
+        orientation: "horizontal"
+        padding: 20
+        spacing: 20
+        height: 90
+        size_hint: (1, None)
+
+        Button:
+            id: start_stop
+            text: "Start"
+            font_size: 25
+            bold: True
+            #background_normal: 'blue_normal.png'
+            #background_down: 'blue_down.png'
+            background_color: (0, 0, 1, 0.5)
+            border: (2, 2, 2, 2)
+            on_press : app.start_stop()
+
+        Button:
+            id: reset
+            text: "Reset"
+            font_size: 25
+            bold: True
+            background_color: (1, 0, 0, 1)
+            border: (2, 2, 2, 2)
+            on_press: app.reset()
+
+    Label:
+        id: stopwatch
+        text: "00:00.[size=40]00[/size]"
+        font_size: 60
+        markup: True
+        

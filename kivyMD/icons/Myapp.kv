@@ -1,0 +1,103 @@
+MDScreen:
+    md_bg_color : [1, 0, 0, 1]
+    radius : [30, 30, 0, 0]
+    
+    MDIconButton:
+        md_bg_color : [0, 0, 0, 1]
+        icon : "language-python"
+        pos_hint: {"center_x":.1, "center_y":.1}
+        theme_text_color : "Custom"
+        text_color : rgba(0, 255, 0,255)
+        user_font_size : 100
+        on_press: self.text_color = rgba(255, 255, 0,255)
+        on_release: self.text_color = rgba(0, 0, 255,255)
+    MDFloatingActionButton:
+        icon : "account"
+        pos_hint: {"center_x":.2, "center_y":.2}
+        theme_text_color : "Custom"
+        text_color : rgba(0, 255, 0,255)
+        md_bg_color : [0, 0, 1, 1]
+        user_font_size : 20
+        elevation : 12
+
+
+    MDFlatButton:
+        text :  "My Button"
+        pos_hint: {"center_x":.5, "center_y":.5}
+        font_size : 50
+        size_hint_y : None
+        height : 60
+        theme_text_color : "Custom"
+        text_color : rgba(0, 255, 0,255)
+
+    MDIcon:
+        icon : "phone"
+        pos_hint: {"center_x": .8 , "center_y": .8}
+        theme_text_color : "Custom"
+        text_color : rgba(0, 255, 0,255)
+
+    MDRaisedButton:
+        text : "MyRaisedButton"
+        pos_hint: {"center_x":.4, "center_y":.4}
+        font_size : 20
+        size_hint_y : None
+        height : 50
+        theme_text_color : "Custom"
+        text_color : rgba(255, 255, 0,255)
+        md_bg_color : rgba(128, 129, 130,255)
+
+    MDRectangleFlatButton:
+        text: "MyRectangleFlatButton"
+        pos_hint: {"center_x":.3, "center_y":.3}
+        theme_text_color: "Custom"
+        text_color: rgba(0, 0, 128,255)
+        font_size: 20
+        size_hint_y: None
+        height: 50
+        md_bg_color: rgba(25, 25, 130,255)
+        on_release: app.callback()
+
+    MDRectangleFlatIconButton:
+        text: "MyRectangleFlatIconButton"
+        icon: "account"
+        pos_hint: {"center_x":.6, "center_y":.6}
+        font_size: 20
+        size_hint_x: None
+        width: 200
+        theme_text_color: "Custom"
+        text_color: rgba(0, 0, 128,255)
+        md_bg_color: rgba(255, 255, 255,255)
+        on_release: app.callback()
+
+    MDRoundFlatButton:
+        text: "MyRoundFlatButton"
+        pos_hint: {"center_x":.7, "center_y":.7}
+        font_size: 20
+        theme_text_color: "Custom"
+        text_color: rgba(200, 130, 128,255)
+        md_bg_color: rgba(255, 255, 14,255)
+        on_release: app.callback()
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDToolbar:
+            title:"Toolbar"
+            left_action_items:[["menu",lambda x: print("Menu bouton GH1")]]
+            right_action_items:[["dots-vertical",lambda x: print("Menu bouton DH1")]]
+            elevation:12
+        MDLabel:
+            text:"Contents"
+            halign:"center"
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDLabel:
+            text:"Contents"
+            halign:"center"
+        MDBottomAppBar:
+            MDToolbar:
+                title:"BToolbar"
+                left_action_items:[["menu",lambda x: print("Menu bouton GB1")]]
+                right_action_items:[["dots-vertical",lambda x: print("Menu bouton DB1")]]
+                type:"bottom"
+                on_action_button:app.callback()

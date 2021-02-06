@@ -1,0 +1,26 @@
+<MyLayout>
+    do_default_tab : False
+
+    size_hint : .5, .5
+    pos_hint : {'center_x': .5, 'center_y': .5}
+
+    tab_pos : 'top_mid' #top_right bottom_right top_left right_top
+
+    TabbedPanelItem:
+        text : "tab 1"
+        Label:
+            text : " hello World!"
+    
+    TabbedPanelItem:
+        text : "tab 2"
+        BoxLayout:
+            Label:
+                text : " press the button  ==>"
+            Button:
+                text : "Click Me!"
+
+    TabbedPanelItem:
+        text : "tab 3"
+
+        Image:
+            source: "images/mando1.png"

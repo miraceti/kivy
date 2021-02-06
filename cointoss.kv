@@ -1,0 +1,17 @@
+<CoinTossBoxLayout>
+    orientation: 'vertical'
+    Label:
+        text: 'Welcome to heads or Tails!'
+        font_size: 50
+    BoxLayout:
+        orientation: 'horizontal'
+        Button:
+            text: 'Heads'
+            on_release: root.choice('heads')
+        Button:
+            text: 'Tails'
+            on_release: root.choice('tails')
+    Label:
+        id: result
+        font_size: 40
+        text: ''
