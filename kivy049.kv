@@ -1,0 +1,42 @@
+<MySwiper@MDSwiperItem>
+    FitImage:
+        source: "images/5.png"
+        radius: [20,]
+
+MDScreen:
+
+    MDToolbar:
+        id: toolbar
+        title: "our swiper app"
+        elevation: 10
+        pos_hint: {"top": 1}
+
+    MDSwiper:
+        size_hint_y: None
+        height: root.height - toolbar.height - dp(40)
+        y: root.height - self.height - toolbar.height - dp(20)
+
+        MySwiper:
+            FitImage:
+                source: "images/5.png"
+                radius: [20,]
+
+        MySwiper:
+            FitImage:
+                source: "images/login_pressed.png"
+                radius: [200,]
+
+        MySwiper:
+            FitImage:
+                source: "images/5.png"
+                radius: [20,]
+
+        MySwiper:
+            FitImage:
+                source: "images/5.png"
+                radius: [20,]
+
+        MySwiper:
+            FitImage:
+                source: "images/5.png"
+                radius: [20,]
