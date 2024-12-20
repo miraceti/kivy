@@ -45,13 +45,13 @@ class PageLayout(PageLayout):
 		# Adding Colour to page
 		# Here we are using colour from
 	
-		btn1.background_color = get_color_from_hex('# FF0000')
+		btn1.background_color = get_color_from_hex('#FF0000')
 
 		btn2 = Button(text ='Page 2')
-		btn2.background_color = get_color_from_hex('# 00FF00')
+		btn2.background_color = get_color_from_hex('#00FF00')
 
 		btn3 = Button(text ='Page 3')
-		btn3.background_color = get_color_from_hex('# 0000FF')
+		btn3.background_color = get_color_from_hex('#0000FF')
 
 
 		# adding button on the screen
