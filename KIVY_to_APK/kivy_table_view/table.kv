@@ -1,0 +1,36 @@
+#:kivy 1.0.9
+
+<ScrollView>:
+    canvas:
+        Color:
+            rgb: 1, 0, 0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<GridLayout>:
+    canvas:
+        Color:
+            rgb: 1, 1, 0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<TableRow>:
+    size_hint: 1, None
+    size: self.width, 25
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<TableCell>:
+    font_size: 14
+    size_hint: 1, 1 # TODO: column.size_x, 1
+    hint_text: self.column.hint_text
+    multiline: False
+    write_tab: False
+    # TODO read BorderImage doc for border values
+    border: 1, 2, 1, 2
