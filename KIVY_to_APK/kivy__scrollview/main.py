@@ -1,7 +1,7 @@
 from kivymd.app import MDApp
 from kivy.uix.floatlayout import floatlayout
 from kivy.lang import Builder
-from kivy.core.window import window
+from kivy.core.window import Window
 
 Window.size = 360, 640
 class Layout_(floatlayout):
