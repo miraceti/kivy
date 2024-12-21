@@ -24,7 +24,7 @@ the code that i used in this video:
     gstreamer1.0-plugins-good
  5) !sudo apt-get install build-essential libsqlite3-dev sqlite3 bzip2 libbz2-dev zlib1g-dev libssl-dev openssl libgdbm-dev libgdbm-compat-dev liblzma-dev libreadline-dev libncursesw5-dev libffi-dev uuid-dev libffi7
  6) !sudo apt-get install libffi-dev 
- 7) !pip install kivy
+ 7) !pip install kivy kivyMD
  8) !sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev
  9) !pip install pyjnius
  10) !buildozer init
