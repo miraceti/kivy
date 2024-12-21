@@ -1,0 +1,20 @@
+<DEMO>:
+    Screen:
+        name: "Ecran1"
+        MDLabel:
+            text: "Ecran 1"
+            halign: "center"
+        MDRaisedButton:
+            text: "Aller a l'ecran 2"
+            pos_hint: {"center_x": .5, "center_y": .4}
+            on_release: root.current = "Ecran2"
+
+    Screen:
+        name: "Ecran2"
+        MDLabel:
+            text: "Ecran 2"
+            halign: "center"
+        MDRaisedButton:
+            text: "Aller a l'ecran 1"
+            pos_hint: {"center_x": .5, "center_y": .4}
+            on_release: root.current = "Ecran1"
