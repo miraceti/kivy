@@ -6,24 +6,27 @@ from kivy.metrics import dp
 
 # from urllib.request import urlopen
 # import json
+import requests
 # import datetime
 version= " (v014g)"
 ##########################################
 #code de recuperation des données externes
 #######################
-# urlexo1 = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+count(pl_name)+as+nbe+from+ps+where+default_flag=1&format=json"
-# print(urlexo1)
+urlexo1 = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+count(pl_name)+as+nbe+from+ps+where+default_flag=1&format=json"
+print(urlexo1)
 # data = json.loads(urlopen(urlexo1).read().decode("utf-8"))
+response = requests.get(urlexo1)
+data = response.json()
 # # print(data)
-# data0=data[0]
+data0=data[0]
 # # print(data0)
-# nb_exoplanets= data0['nbe']
+nb_exoplanets= data0['nbe']
 # print(nb_exoplanets)
 # ######################
 # now = datetime.date.today()
 # y0 = now.year
 # print(y0)
-nb_exoplanets = 5100
+# nb_exoplanets = 5100
 ############################################################
 #########################################
 
