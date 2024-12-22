@@ -36,11 +36,11 @@ KV = '''
             pos_hint: {"center_y": .95, "center_x": .5}
         MDRaisedButton:
             text: "Ecran precedent"
-            pos_hint: {"center_y": .05, "center_x": .1}
+            pos_hint: {"center_y": .1, "center_x": .2}
             on_release: root.manager.current = "DEMO1"
         MDRaisedButton:
             text: "Ecran suivant"
-            pos_hint: {"center_y": .05, "center_x": .9}
+            pos_hint: {"center_y": .1, "center_x": .8}
             on_release: root.manager.current = "DEMO3"
 
 <DEMO3>:
