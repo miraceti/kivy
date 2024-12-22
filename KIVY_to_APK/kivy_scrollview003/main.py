@@ -6,7 +6,7 @@ from kivy.core.window import Window
 KV = '''
 <Layout_>
     ScrollView:
-        width: root.width
+        siwidth: root.width
         size_hint_y: None
         height: root.height
         GridLayout:
@@ -28,6 +28,7 @@ KV = '''
                 MDLabel:
                     id: cart1_text
                     text: "ici1"
+                    halign:"center"
             MDCard:
                 orientation: "vertical"
                 padding: "8dp"
