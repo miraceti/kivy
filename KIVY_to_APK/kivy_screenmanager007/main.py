@@ -140,7 +140,7 @@ class DEMO1(Screen):
     def on_enter(self, *args):
         # Mettre à jour le texte de l'étiquette
 
-        self.ids.label_ecran1.text = f"Nombre d'exoplanètes dé&couvertes à ce jour : [color=ff0000][b][size=30]{nb_exoplanets}[/size][/b][/color] "  # Mettre à jour le texte de l'étiquette
+        self.ids.label_ecran1.text = f"Nb exoplanètes à ce jour : [color=ff0000][b][size=30]{nb_exoplanets}[/size][/b][/color] "  # Mettre à jour le texte de l'étiquette
         # Define Table
         self.table = MDDataTable(
             use_pagination=True,
