@@ -10,15 +10,13 @@ KV = '''
         orientation: "vertical"
         md_bg_color: 0, 0.5, 0.8, 1  # Couleur bleu clair (RGBA)
 
-        FloatLayout:
-            MDLabel:
-                text: 'ECRAN1'
-                halign: "center"
-                pos_hint: {"center_y": .95}  # Remonter le texte vers le haut
+        MDLabel:
+            text: 'ECRAN1'
+            halign: "center"
+            pos_hint: {"center_y": .95, "center_x": .5}
 
-            FloatLayout:
-                id: table_ecran1
-                pos_hint: {"center_y": .5}  # Remonter la table
+        FloatLayout:
+            id: table_ecran1
 
         MDBoxLayout:
             size_hint_y: 0.1
@@ -28,29 +26,22 @@ KV = '''
             MDRaisedButton:
                 text: "Ecran precedent"
                 size_hint_x: 0.4
-                md_bg_color: 0.2, 0.2, 0.2, 1  # Gris foncé (RGBA)
-                text_color: 1, 1, 1, 1  # Blanc
-                font_name: "Roboto-Bold"  # Police en gras
                 on_release: root.manager.current = "DEMO3"
 
             MDRaisedButton:
                 text: "Ecran suivant"
                 size_hint_x: 0.4
-                md_bg_color: 0, 0, 0.5, 1  # Bleu foncé (RGBA)
-                text_color: 1, 1, 1, 1  # Blanc
-                font_name: "Roboto-Bold"  # Police en gras
                 on_release: root.manager.current = "DEMO2"
 
 <DEMO2>:
     MDBoxLayout:
         orientation: "vertical"
-        md_bg_color: 0.9, 0.1, 0.1, 0.8  # Couleur rouge clair (RGBA)
+        md_bg_color: 0, 0.5, 0.8, 1  # Couleur bleu clair (RGBA)
 
-        FloatLayout:
-            MDLabel:
-                text: 'ECRAN2'
-                halign: "center"
-                pos_hint: {"center_y": .95}  # Remonter le texte vers le haut
+        MDLabel:
+            text: 'ECRAN2'
+            halign: "center"
+            pos_hint: {"center_y": .95, "center_x": .5}
 
         MDBoxLayout:
             size_hint_y: 0.1
@@ -60,29 +51,22 @@ KV = '''
             MDRaisedButton:
                 text: "Ecran precedent"
                 size_hint_x: 0.4
-                md_bg_color: 0.2, 0.2, 0.2, 1  # Gris foncé (RGBA)
-                text_color: 1, 1, 1, 1  # Blanc
-                font_name: "Roboto-Bold"  # Police en gras
                 on_release: root.manager.current = "DEMO1"
 
             MDRaisedButton:
                 text: "Ecran suivant"
                 size_hint_x: 0.4
-                md_bg_color: 0, 0, 0.5, 1  # Bleu foncé (RGBA)
-                text_color: 1, 1, 1, 1  # Blanc
-                font_name: "Roboto-Bold"  # Police en gras
                 on_release: root.manager.current = "DEMO3"
 
 <DEMO3>:
     MDBoxLayout:
         orientation: "vertical"
-        md_bg_color: 0.1, 0.9, 0.1, 0.8  # Couleur vert clair (RGBA)
+        md_bg_color: 0, 0.5, 0.8, 1  # Couleur bleu clair (RGBA)
 
-        FloatLayout:
-            MDLabel:
-                text: 'ECRAN3'
-                halign: "center"
-                pos_hint: {"center_y": .95}  # Remonter le texte vers le haut
+        MDLabel:
+            text: 'ECRAN3'
+            halign: "center"
+            pos_hint: {"center_y": .95, "center_x": .5}
 
         MDBoxLayout:
             size_hint_y: 0.1
@@ -92,17 +76,11 @@ KV = '''
             MDRaisedButton:
                 text: "Ecran precedent"
                 size_hint_x: 0.4
-                md_bg_color: 0.2, 0.2, 0.2, 1  # Gris foncé (RGBA)
-                text_color: 1, 1, 1, 1  # Blanc
-                font_name: "Roboto-Bold"  # Police en gras
                 on_release: root.manager.current = "DEMO2"
 
             MDRaisedButton:
                 text: "Ecran suivant"
                 size_hint_x: 0.4
-                md_bg_color: 0, 0, 0.5, 1  # Bleu foncé (RGBA)
-                text_color: 1, 1, 1, 1  # Blanc
-                font_name: "Roboto-Bold"  # Police en gras
                 on_release: root.manager.current = "DEMO1"
 
 '''
@@ -112,11 +90,9 @@ class DEMO1(Screen):
         # Define Table
         self.table = MDDataTable(
             use_pagination=True,
-            pos_hint={'center_x': 0.5, 'center_y': 0.5},  # Centrer la table
-            size_hint=(0.9, None),  # Largeur fixe et hauteur dynamique
-            height=dp(8 * 48 + 56),  # 5 lignes * 48dp + 56dp pour l'en-tête
+            pos_hint={'center_x': 0.5, 'center_y': 0.8},
+            size_hint=(0.9, 0.9),
             check=True,
-
             column_data=[
                 ("First Name", dp(30)),
                 ("Last Name", dp(30)),
@@ -158,12 +134,18 @@ class DEMO1(Screen):
         print(instance_table, current_row)
 
     def sort_on_email(self, data):
-        """    Fonction de tri personnalisée pour la colonne Email Address.    """
-        # Trier les données par la 3ème colonne (index 2)
-        sorted_data = sorted(data, key=lambda row: row[2])  
-        # Extraire les indices et les données triées
-        sorted_indices = [i for i in range(len(sorted_data))]
-        return sorted_indices, sorted_data
+        return zip(
+            *sorted(
+                enumerate(data),
+                key=lambda l: sum(
+                    [
+                        int(l[1][-2].split("@")[0]) * 60,
+                        int(l[1][-2].split("@")[1]),
+                    ]
+                ),
+            )
+        )
+
     
 class DEMO2(Screen):
     pass
@@ -173,8 +155,6 @@ class DEMO3(Screen):
 
 class Main(MDApp):
     def build(self):
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Orange"
         Builder.load_string(KV)
 
         sm = ScreenManager()
