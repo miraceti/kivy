@@ -4,6 +4,11 @@ from kivy.lang import Builder
 from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 
+##########################################
+#code de recuperation des données externes
+
+#########################################
+
 KV = '''
 <DEMO1>:
     MDBoxLayout:
@@ -44,7 +49,8 @@ KV = '''
 <DEMO2>:
     MDBoxLayout:
         orientation: "vertical"
-        md_bg_color: 0.9, 0.1, 0.1, 0.8  # Couleur rouge clair (RGBA)
+        md_bg_color: 0.30, 0.01, 0.31, 0.8  # Couleur rouge clair (RGBA)
+        #rgba(81, 4, 80, 0.8)
 
         FloatLayout:
             MDLabel:
