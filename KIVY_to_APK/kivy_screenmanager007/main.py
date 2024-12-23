@@ -12,21 +12,21 @@ version= " (v006a)"
 ##########################################
 #code de recuperation des données externes
 #######################
-urlexo1 = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+count(pl_name)+as+nbe+from+ps+where+default_flag=1&format=json"
-print(urlexo1)
-# data = json.loads(urlopen(urlexo1).read().decode("utf-8"))
-response = requests.get(urlexo1)
-data = response.json()
-# # print(data)
-data0=data[0]
-# # print(data0)
-nb_exoplanets= data0['nbe']
-# print(nb_exoplanets)
+urlexo_nbpl = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+count(pl_name)+as+nbe+from+ps+where+default_flag=1&format=json"
+response = requests.get(urlexo_nbpl)
+data_nbpl = response.json()
+nb_exoplanets= data_nbpl[0]['nbe']
 # ######################
 # now = datetime.date.today()
 # y0 = now.year
 # print(y0)
 # nb_exoplanets = 5100
+#######################
+# urlexo_pllist = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+distinct+pl_name,disc_year,sy_dist,discoverymethod,pl_bmasse,pl_rade\
+# +from+ps+&format=json"
+# response = requests.get(urlexo_pllist)
+# data_pllist = response.json()
+# nb_exoplanets= data_pllist[0]['pl_name']
 ############################################################
 #########################################
 
@@ -80,6 +80,132 @@ KV = '''
                 text: 'ECRAN2'
                 halign: "center"
                 pos_hint: {"center_y": .95}  # Remonter le texte vers le haut
+
+            FloatLayout:
+                ScrollView:
+                    siwidth: root.width
+                    size_hint_y: None
+                    height: root.height-60
+                    GridLayout:
+                        size_hint_y: None
+                        height: self.minimum_height
+                        width: self.minimum_width
+                        cols: 2
+                        spacing: "20dp"
+                        padding: "20dp"
+
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart1_text
+                                text: "ici1"
+                                halign:"center"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart2_text
+                                text: "ici2"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart3_text
+                                text: "ici3"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart4_text
+                                text: "ici4"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart5_text
+                                text: "ici5"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart6_text
+                                text: "ici6"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart7_text
+                                text: "ici7"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart8_text
+                                text: "ici8"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart9_text
+                                text: "ici9"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart10_text
+                                text: "ici10"
+                                        
 
         MDBoxLayout:
             size_hint_y: 0.1
@@ -140,7 +266,7 @@ class DEMO1(Screen):
     def on_enter(self, *args):
         # Mettre à jour le texte de l'étiquette
 
-        self.ids.label_ecran1.text = f"Nb exoplanètes à ce jour : [color=ff0000][b][size=30]{nb_exoplanets}[/size][/b][/color] "  # Mettre à jour le texte de l'étiquette
+        self.ids.label_ecran1.text = f"Nb exoplanètes à ce jour : [color=ff0000][b][size=60]{nb_exoplanets}[/size][/b][/color] "  # Mettre à jour le texte de l'étiquette
         # Define Table
         self.table = MDDataTable(
             use_pagination=True,
