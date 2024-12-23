@@ -11,22 +11,54 @@ import requests
 version= " (v006a)"
 ##########################################
 #code de recuperation des données externes
+urlexo_pllist = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+distinct+pl_name,disc_year,sy_dist,discoverymethod,pl_bmasse,pl_rade\
++from+ps+&format=json"
+response = requests.get(urlexo_pllist)
+data_pllist = response.json()
 #######################
-urlexo_nbpl = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+count(pl_name)+as+nbe+from+ps+where+default_flag=1&format=json"
-response = requests.get(urlexo_nbpl)
-data_nbpl = response.json()
-nb_exoplanets= data_nbpl[0]['nbe']
-# ######################
-# now = datetime.date.today()
-# y0 = now.year
-# print(y0)
-# nb_exoplanets = 5100
+#### ECRAN1
 #######################
-# urlexo_pllist = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+distinct+pl_name,disc_year,sy_dist,discoverymethod,pl_bmasse,pl_rade\
-# +from+ps+&format=json"
-# response = requests.get(urlexo_pllist)
-# data_pllist = response.json()
-# nb_exoplanets= data_pllist[0]['pl_name']
+data_nbpl = list({(item['pl_name']) for item in data_pllist})
+nb_exoplanets= len(data_nbpl)
+
+# Regrouper par 'pl_name' et garder les valeurs maximales pour les autres colonnes
+aggregated_data = {}
+for row in data_pllist:
+    pl_name = row['pl_name']
+    if pl_name not in aggregated_data:
+        aggregated_data[pl_name] = row
+    else:
+        for key in row:
+            if key != 'pl_name' and row[key] is not None:
+                # Conserver la valeur maximale pour les autres colonnes
+                aggregated_data[pl_name][key] = max(aggregated_data[pl_name][key], row[key]) if aggregated_data[pl_name][key] is not None else row[key]
+
+# Convertir en une liste de tuples pour MDDataTable
+data_table_tuple = [
+    (row['pl_name'], row['disc_year'], row['sy_dist'], row['discoverymethod'], row['pl_bmasse'], row['pl_rade'])
+    for row in aggregated_data.values()
+]
+#######################
+
+#######################
+### ECRAN2
+#######################
+#cle associés
+keys = ["pl_name","disc_year","sy_dist","discoverymethod","pl_bmasse","pl_rade"]
+
+#conversion en liste de dict
+data_table_dict = [dict(zip(keys, tpl)) for tpl in data_table_tuple]
+
+#######################
+
+#######################
+### ECRAN3
+#######################
+
+
+#######################
+
+
 ############################################################
 #########################################
 
@@ -72,7 +104,8 @@ KV = '''
 <DEMO2>:
     MDBoxLayout:
         orientation: "vertical"
-        md_bg_color: 0.30, 0.01, 0.31, 0.8  # Couleur rouge clair (RGBA)
+        md_bg_color: 0.9, 0.1, 0.1, 0.8  # Couleur rouge clair (RGBA)
+        #md_bg_color: 0.1, 0.9, 0.1, 0.8  # Couleur vert clair (RGBA)
         #rgba(81, 4, 80, 0.8)
 
         FloatLayout:
@@ -99,6 +132,7 @@ KV = '''
                             padding: "8dp"
                             size_hint: 1, None
                             height: "210dp"
+                            md_bg_color: 0.1, 0.6, 0.8, 1 #couleur de fond : bleu clair
                             elevation: 5
                             border_radius: 20
                             radius: [15]
@@ -266,6 +300,24 @@ class DEMO1(Screen):
     def on_enter(self, *args):
         # Mettre à jour le texte de l'étiquette
 
+        # Regrouper par 'pl_name' et garder les valeurs maximales pour les autres colonnes
+        # aggregated_data = {}
+        # for row in data_pllist:
+        #     pl_name = row['pl_name']
+        #     if pl_name not in aggregated_data:
+        #         aggregated_data[pl_name] = row
+        #     else:
+        #         for key in row:
+        #             if key != 'pl_name' and row[key] is not None:
+        #                 # Conserver la valeur maximale pour les autres colonnes
+        #                 aggregated_data[pl_name][key] = max(aggregated_data[pl_name][key], row[key]) if aggregated_data[pl_name][key] is not None else row[key]
+
+        # # Convertir en une liste de tuples pour MDDataTable
+        # data_table = [
+        #     (row['pl_name'], row['disc_year'], row['sy_dist'], row['discoverymethod'], row['pl_bmasse'], row['pl_rade'])
+        #     for row in aggregated_data.values()
+        # ]
+
         self.ids.label_ecran1.text = f"Nb exoplanètes à ce jour : [color=ff0000][b][size=60]{nb_exoplanets}[/size][/b][/color] "  # Mettre à jour le texte de l'étiquette
         # Define Table
         self.table = MDDataTable(
@@ -276,28 +328,15 @@ class DEMO1(Screen):
             check=True,
 
             column_data=[
-                ("First Name", dp(30)),
-                ("Last Name", dp(30)),
-                ("Email Address", dp(30),self.sort_on_email),
-                ("Phone Number", dp(30))
+                ("pl_name", dp(30),self.sort_on_pl_name),
+                ("disc_year", dp(30)),
+                ("sy_dist", dp(30)),
+                ("discoverymethod", dp(30)),
+                ("pl_bmasse", dp(30)),
+                ("pl_rade", dp(30))
             ],
-            row_data=[
-                ("1John", "Elder", "john@codemy.com", "(123) 456-7891"),
-                ("2Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("3Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("4Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("5Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("6Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("7Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("8John", "Elder", "john@codemy.com", "(123) 456-7891"),
-                ("9Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("10Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("11Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("12Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("13Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-                ("14Mary", "Elder", "mary@codemy.com", "(123) 456-1123"),
-            ],
-            sorted_on="Email Address",
+            row_data=data_table_tuple,
+            sorted_on="pl_name",
             sorted_order="ASC",
             elevation=2,
         )
@@ -315,8 +354,8 @@ class DEMO1(Screen):
 
         print(instance_table, current_row)
 
-    def sort_on_email(self, data):
-        """    Fonction de tri personnalisée pour la colonne Email Address.    """
+    def sort_on_pl_name(self, data):
+        """    Fonction de tri personnalisée pour la colonne PL_NAME.    """
         # Trier les données par la 3ème colonne (index 2)
         sorted_data = sorted(data, key=lambda row: row[2])  
         # Extraire les indices et les données triées
@@ -324,7 +363,27 @@ class DEMO1(Screen):
         return sorted_indices, sorted_data
     
 class DEMO2(Screen):
-    pass
+    def on_enter(self, *args):
+        # Filtrer les planètes avec une distance valide (non None)
+        valid_planets = [planet for planet in data_table_dict if planet.get('sy_dist') is not None]
+        
+        # Trier les planètes par distance
+        sorted_planets = sorted(valid_planets, key=lambda x: x['sy_dist'])
+        
+        # Sélectionner les 10 plus proches
+        closest_planets = sorted_planets[:10]
+        # Liste des IDs des cartes
+        card_ids = [
+            'cart1_text', 'cart2_text', 'cart3_text', 'cart4_text', 'cart5_text',
+            'cart6_text', 'cart7_text', 'cart8_text', 'cart9_text', 'cart10_text'
+        ]
+
+        # Mettre à jour les cartes avec les données des planètes
+        for i, planet in enumerate(closest_planets):
+            pl_name = planet.get('pl_name', 'Unknown')
+            sy_dist = planet.get('sy_dist', 'Unknown')
+            # Mettre à jour le texte de la carte
+            self.ids[card_ids[i]].text = f"Nom: {pl_name}\nDistance: {sy_dist:.2f} AL"
 
 class DEMO3(Screen):
     pass
