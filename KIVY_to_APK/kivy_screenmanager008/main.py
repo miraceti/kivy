@@ -4,6 +4,11 @@ from kivy.lang import Builder
 from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 
+from kivy.uix.floatlayout import FloatLayout
+from kivy_garden.matplotlib import FigureCanvasKivyAgg
+import matplotlib.pyplot as plt
+import numpy as np
+
 # from urllib.request import urlopen
 # import json
 import requests
@@ -54,7 +59,32 @@ data_table_dict = [dict(zip(keys, tpl)) for tpl in data_table_tuple]
 #######################
 ### ECRAN3
 #######################
+# define what we want to graph
+x = [1,2,3,4,5]
+y = [5,12,6,9,15]
 
+# plt.style.use('dark_background')
+plt.figure(1)
+plt.plot(x,y)
+plt.ylabel("Y axes")
+plt.xlabel("X axes")
+
+#pie
+# labels = 'Frogs', 'Hogs', 'Dogs', 'logs'
+# sizes = [15, 30, 45, 10]
+# fig, ax = plt.subplots()
+# ax.pie(sizes, labels=labels)
+plt.figure(2)
+data = {'a': np.arange(50),
+        'c': np.random.randint(0, 50, 50),
+        'd': np.random.randn(50)}
+data['b'] = data['a'] + 10 * np.random.randn(50)
+data['d'] = np.abs(data['d']) * 100
+
+plt.scatter('a', 'b', c='c', s='d', data=data)
+plt.xlabel('entry a')
+plt.ylabel('entry b')
+# plt.show()
 
 #######################
 
@@ -272,6 +302,12 @@ KV = '''
                 halign: "center"
                 pos_hint: {"center_y": .95}  # Remonter le texte vers le haut
 
+            BoxLayout:
+                id: box3
+                size_hint_y: .8
+                pos_hint: {"center_y": .5}  # Remonter la table
+                #pos_hint: {"top": 1}
+
         MDBoxLayout:
             size_hint_y: 0.1
             padding: dp(10)
@@ -284,6 +320,76 @@ KV = '''
                 text_color: 1, 1, 1, 1  # Blanc
                 font_name: "Roboto-Bold"  # Police en gras
                 on_release: root.manager.current = "DEMO2"
+
+            MDRaisedButton:
+                text: "Ecran suivant"
+                size_hint_x: 0.4
+                md_bg_color: 0, 0, 0.5, 1  # Bleu foncé (RGBA)
+                text_color: 1, 1, 1, 1  # Blanc
+                font_name: "Roboto-Bold"  # Police en gras
+                on_release: root.manager.current = "DEMO4"
+
+<DEMO4>:
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: 0.9, 0.9, 0.1, 0.8  # Couleur vert clair (RGBA)
+
+        FloatLayout:
+            MDLabel:
+                text: 'ECRAN4'
+                halign: "center"
+                pos_hint: {"center_y": .95}  # Remonter le texte vers le haut
+
+            BoxLayout:
+                id: box4
+                size_hint_y: .8
+                pos_hint: {"center_y": .5}  # Remonter la table
+                #pos_hint: {"top": 1}
+
+        MDBoxLayout:
+            size_hint_y: 0.1
+            padding: dp(10)
+            spacing: dp(10)
+
+            MDRaisedButton:
+                text: "Ecran precedent"
+                size_hint_x: 0.4
+                md_bg_color: 0.2, 0.2, 0.2, 1  # Gris foncé (RGBA)
+                text_color: 1, 1, 1, 1  # Blanc
+                font_name: "Roboto-Bold"  # Police en gras
+                on_release: root.manager.current = "DEMO3"
+
+            MDRaisedButton:
+                text: "Ecran suivant"
+                size_hint_x: 0.4
+                md_bg_color: 0, 0, 0.5, 1  # Bleu foncé (RGBA)
+                text_color: 1, 1, 1, 1  # Blanc
+                font_name: "Roboto-Bold"  # Police en gras
+                on_release: root.manager.current = "DEMO5"
+
+<DEMO5>:
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: 0.9, 0.1, 0.9, 0.8  # Couleur vert clair (RGBA)
+
+        FloatLayout:
+            MDLabel:
+                text: 'ECRAN5'
+                halign: "center"
+                pos_hint: {"center_y": .95}  # Remonter le texte vers le haut
+
+        MDBoxLayout:
+            size_hint_y: 0.1
+            padding: dp(10)
+            spacing: dp(10)
+
+            MDRaisedButton:
+                text: "Ecran precedent"
+                size_hint_x: 0.4
+                md_bg_color: 0.2, 0.2, 0.2, 1  # Gris foncé (RGBA)
+                text_color: 1, 1, 1, 1  # Blanc
+                font_name: "Roboto-Bold"  # Police en gras
+                on_release: root.manager.current = "DEMO4"
 
             MDRaisedButton:
                 text: "Ecran suivant"
@@ -388,7 +494,32 @@ class DEMO2(Screen):
             self.ids[card_ids[i]].text = f"Nom: {pl_name}\nDistance: {sy_dist:.2f} Parsecs\nRayon: {str(pl_rade)} Kms\nMasse: {str(pl_bmasse)} Terre\nMethode: {discoverymethod}"
 
 class DEMO3(Screen):
+    def __init__ (self, **kwargs):
+        super().__init__(**kwargs)
+        
+        box = self.ids.box3
+        box.add_widget(FigureCanvasKivyAgg(plt.figure(1)))
+        
+    # def save_it(self):
+    #     name = self.ids.namer.text
+    #     if name:
+    #         plt.savefig(name)
+
+class DEMO4(Screen):
+    def __init__ (self, **kwargs):
+        super().__init__(**kwargs)
+        
+        box = self.ids.box4
+        box.add_widget(FigureCanvasKivyAgg(plt.figure(2)))
+        
+    # def save_it(self):
+    #     name = self.ids.namer.text
+    #     if name:
+    #         plt.savefig(name)
+
+class DEMO5(Screen):
     pass
+
 
 class Main(MDApp):
     def build(self):
@@ -401,6 +532,8 @@ class Main(MDApp):
         sm.add_widget(DEMO1(name="DEMO1"))
         sm.add_widget(DEMO2(name="DEMO2"))
         sm.add_widget(DEMO3(name="DEMO3"))
+        sm.add_widget(DEMO4(name="DEMO4"))
+        sm.add_widget(DEMO5(name="DEMO5"))
 
         return sm
 
