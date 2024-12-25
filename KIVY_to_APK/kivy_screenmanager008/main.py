@@ -317,7 +317,7 @@ class DEMO1(Screen):
         #     for row in aggregated_data.values()
         # ]
 
-        self.ids.label_ecran1.text = f"Nb exoplanètes à ce jour : [color=ff0000][b][size=60]{nb_exoplanets}[/size][/b][/color] "  # Mettre à jour le texte de l'étiquette
+        self.ids.label_ecran1.text = f"Nb exoplanètes à ce jour : [color=ff0000][b][size=80]{nb_exoplanets}[/size][/b][/color] "  # Mettre à jour le texte de l'étiquette
         # Define Table
         self.table = MDDataTable(
             use_pagination=True,
@@ -381,8 +381,11 @@ class DEMO2(Screen):
         for i, planet in enumerate(closest_planets):
             pl_name = planet.get('pl_name', 'Unknown')
             sy_dist = planet.get('sy_dist', 'Unknown')
+            pl_rade = planet.get('pl_rade', 'Unknown')
+            pl_bmasse = planet.get('pl_bmasse', 'Unknown')
+            discoverymethod = planet.get('discoverymethod', 'Unknown')
             # Mettre à jour le texte de la carte
-            self.ids[card_ids[i]].text = f"Nom: {pl_name}\nDistance: {sy_dist:.2f} AL"
+            self.ids[card_ids[i]].text = f"Nom: {pl_name}\nDistance: {sy_dist:.2f} Parsecs\nRayon: {str(pl_rade)} Kms\nMasse: {str(pl_bmasse)} Terre\nMethode: {discoverymethod}"
 
 class DEMO3(Screen):
     pass
