@@ -7,7 +7,6 @@ from kivy.metrics import dp
 from kivy.uix.floatlayout import FloatLayout
 from kivy_garden.matplotlib import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
-import numpy as np
 
 # from urllib.request import urlopen
 # import json
@@ -59,36 +58,118 @@ data_table_dict = [dict(zip(keys, tpl)) for tpl in data_table_tuple]
 #######################
 ### ECRAN3
 #######################
-# define what we want to graph
-x = [1,2,3,4,5]
-y = [5,12,6,9,15]
+#extraction des tuples (pl_name, disc_year) sans doublons
+unique_data = list(set(map(lambda x: (x['pl_name'], x['disc_year']), data_table_dict)))
 
-# plt.style.use('dark_background')
-plt.figure(1)
-plt.plot(x,y)
-plt.ylabel("Y axes")
-plt.xlabel("X axes")
+#creation du comptage par année
+from collections import Counter
+#comptage decouverte par annee
+discovery_counts = Counter(item['disc_year'] for item in data_table_dict)
+#tri par annee
+sorted_discovery_counts = sorted(discovery_counts.items())
+
+#separation resultat en 2 listes
+liste_annee, liste_nb = zip(*sorted_discovery_counts)
+
+liste_annee = list(liste_annee)
+liste_nb = list(liste_nb)
+
+#tracer graphique
+plt.figure(3, figsize=(10,6))
+plt.plot(liste_annee, liste_nb, marker='o', linestyle='-', color='b', label='Nombre par année')
+plt.title("Nombre d'exoplanètes par année")
+plt.xlabel("Année")
+plt.ylabel("Nombre")
+plt.grid(True)
+plt.legend()
+# plt.show()
+
+
+#######################
+### ECRAN4
+#######################
+# plt.figure(4)
+# data = {'a': np.arange(50),
+#         'c': np.random.randint(0, 50, 50),
+#         'd': np.random.randn(50)}
+# data['b'] = data['a'] + 10 * np.random.randn(50)
+# data['d'] = np.abs(data['d']) * 100
+
+# plt.scatter('a', 'b', c='c', s='d', data=data)
+# plt.xlabel('entry a')
+# plt.ylabel('entry b')
+# # plt.show()
+
+#extraire les données
+x = [item['disc_year'] for item in data_table_dict] #année de decouverte : X
+y = [item['pl_bmasse'] for item in data_table_dict] #masse de la planete : Y
+methods = [item['discoverymethod'] for item in data_table_dict]#methode de decouverte
+
+#taille des points
+size = 100
+
+#palette de couleurs
+unique_methods = list(set(methods))
+colors = {method: plt.cm.tab10(i) for i, method in enumerate(unique_methods)}
+
+#tracer graph
+plt.figure(4, figsize=(10,6))
+
+for method in unique_methods:
+    #filtrage data par methodes
+    x_vals = [x[i] for i in range(len(x)) if methods[i]== method]
+    y_vals = [y[i] for i in range(len(y)) if methods[i]== method]
+    plt.scatter(x_vals, y_vals, s=size, color=colors[method], label=method, alpha=0.7, edgecolors='w')
+
+#ajout detail graph
+plt.title("Masse de la planete VS Année de découverte", fontsize=16)
+plt.xlabel("Année de découverte (disc_year)", fontsize=14)
+plt.ylabel("Masse de la planete (pl_bmasse)", fontsize=14)
+plt.grid(True, linestyle='--', alpha=0.6)
+
+#legende
+plt.legend(title="Méthodes de découvertes", fontsize=12, loc='center left', bbox_to_anchor=(1, 0.5))
+
+#ajuster l'epacement
+plt.tight_layout()
+
+#######################
+### ECRAN5
+#######################
 
 #pie
+# plt.style.use('dark_background')
 # labels = 'Frogs', 'Hogs', 'Dogs', 'logs'
 # sizes = [15, 30, 45, 10]
 # fig, ax = plt.subplots()
 # ax.pie(sizes, labels=labels)
-plt.figure(2)
-data = {'a': np.arange(50),
-        'c': np.random.randint(0, 50, 50),
-        'd': np.random.randn(50)}
-data['b'] = data['a'] + 10 * np.random.randn(50)
-data['d'] = np.abs(data['d']) * 100
-
-plt.scatter('a', 'b', c='c', s='d', data=data)
-plt.xlabel('entry a')
-plt.ylabel('entry b')
-# plt.show()
-
-#######################
 
 
+#########
+#comptage des ocurence
+discovery_methods = [item['discoverymethod'] for item in data_table_dict]
+method_counts = Counter(discovery_methods)
+
+#preparation données
+labels = list(method_counts.keys())
+counts = list(method_counts.values())
+
+#palette de couleurs pour les barres
+colors = plt.cm.Paired.colors[:len(labels)]
+
+#tracage
+plt.figure(5, figsize=(10,6))
+plt.bar(labels, counts, color=colors, edgecolor='black')
+plt.title("Répartition  des méthodes de découverte", fontsize=16)
+plt.xlabel("Méthodes de découverte", fontsize=14)
+plt.ylabel("nombre d'éléments", fontsize=14)
+plt.xticks(rotation=45 , fontsize=12)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+
+
+fig_num=plt.gcf().number
+print(fig_num)
 ############################################################
 #########################################
 
@@ -121,7 +202,7 @@ KV = '''
                 md_bg_color: 0.2, 0.2, 0.2, 1  # Gris foncé (RGBA)
                 text_color: 1, 1, 1, 1  # Blanc
                 font_name: "Roboto-Bold"  # Police en gras
-                on_release: root.manager.current = "DEMO3"
+                on_release: root.manager.current = "DEMO5"
 
             MDRaisedButton:
                 text: "Ecran suivant"
@@ -378,6 +459,12 @@ KV = '''
                 halign: "center"
                 pos_hint: {"center_y": .95}  # Remonter le texte vers le haut
 
+            BoxLayout:
+                id: box5
+                size_hint_y: .8
+                pos_hint: {"center_y": .5}  # Remonter la table
+                #pos_hint: {"top": 1}
+
         MDBoxLayout:
             size_hint_y: 0.1
             padding: dp(10)
@@ -498,7 +585,7 @@ class DEMO3(Screen):
         super().__init__(**kwargs)
         
         box = self.ids.box3
-        box.add_widget(FigureCanvasKivyAgg(plt.figure(1)))
+        box.add_widget(FigureCanvasKivyAgg(plt.figure(3)))
         
     # def save_it(self):
     #     name = self.ids.namer.text
@@ -510,7 +597,7 @@ class DEMO4(Screen):
         super().__init__(**kwargs)
         
         box = self.ids.box4
-        box.add_widget(FigureCanvasKivyAgg(plt.figure(2)))
+        box.add_widget(FigureCanvasKivyAgg(plt.figure(4)))
         
     # def save_it(self):
     #     name = self.ids.namer.text
@@ -518,7 +605,16 @@ class DEMO4(Screen):
     #         plt.savefig(name)
 
 class DEMO5(Screen):
-    pass
+    def __init__ (self, **kwargs):
+        super().__init__(**kwargs)
+        
+        box = self.ids.box5
+        box.add_widget(FigureCanvasKivyAgg(plt.figure(5)))
+        
+    # def save_it(self):
+    #     name = self.ids.namer.text
+    #     if name:
+    #         plt.savefig(name)
 
 
 class Main(MDApp):
