@@ -76,9 +76,10 @@ the code that i used in this video:
  !pip install pyjnius
  
  !buildozer init
-					requirements = python3,kivy==2.3.0,kivymd==1.2.0,requests==2.31.0,docutils, Kivy-Garden, pygments, pypiwin32
+					requirements = python3,kivy==2.3.0,kivymd==1.2.0,requests==2.31.0,docutils, Kivy-Garden, pygments, pypiwin32,,matplotlib,kivy_matplotlib_widget
 					android.permissions = android.permission.INTERNET, (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18)
 
+matplotlib==3.8.2
 !buildozer -v android debug
 
 
