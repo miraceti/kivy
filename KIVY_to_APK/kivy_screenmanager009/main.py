@@ -5,14 +5,14 @@ from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 
 from kivy.uix.floatlayout import FloatLayout
-from kivy_garden.matplotlib import FigureCanvasKivyAgg
+# from kivy_garden.matplotlib import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 
 # from urllib.request import urlopen
 # import json
 import requests
 # import datetime
-version= " (v006a)"
+version= " (v009)"
 ##########################################
 #code de recuperation des données externes
 urlexo_pllist = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+distinct+pl_name,disc_year,sy_dist,discoverymethod,pl_bmasse,pl_rade\
@@ -510,7 +510,7 @@ class DEMO1(Screen):
         #     for row in aggregated_data.values()
         # ]
 
-        self.ids.label_ecran1.text = f"Nb exoplanètes à ce jour : [color=ff0000][b][size=80]{nb_exoplanets}[/size][/b][/color] "  # Mettre à jour le texte de l'étiquette
+        self.ids.label_ecran1.text = f"Nb exoplanètes à ce jour {version} : [color=ff0000][b][size=80]{nb_exoplanets}[/size][/b][/color] "  # Mettre à jour le texte de l'étiquette
         # Define Table
         self.table = MDDataTable(
             use_pagination=True,
@@ -585,7 +585,7 @@ class DEMO3(Screen):
         super().__init__(**kwargs)
         
         box = self.ids.box3
-        box.add_widget(FigureCanvasKivyAgg(plt.figure(3)))
+        # box.add_widget(FigureCanvasKivyAgg(plt.figure(3)))
         
     # def save_it(self):
     #     name = self.ids.namer.text
@@ -597,7 +597,7 @@ class DEMO4(Screen):
         super().__init__(**kwargs)
         
         box = self.ids.box4
-        box.add_widget(FigureCanvasKivyAgg(plt.figure(4)))
+        # box.add_widget(FigureCanvasKivyAgg(plt.figure(4)))
         
     # def save_it(self):
     #     name = self.ids.namer.text
@@ -609,7 +609,7 @@ class DEMO5(Screen):
         super().__init__(**kwargs)
         
         box = self.ids.box5
-        box.add_widget(FigureCanvasKivyAgg(plt.figure(5)))
+        # box.add_widget(FigureCanvasKivyAgg(plt.figure(5)))
         
     # def save_it(self):
     #     name = self.ids.namer.text
