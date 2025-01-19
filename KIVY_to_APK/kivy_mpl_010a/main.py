@@ -32,7 +32,8 @@ from collections import Counter
 version= " (v010)"
 ##########################################
 #code de recuperation des données externes
-urlexo_pllist = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+distinct+pl_name,disc_year,sy_dist,discoverymethod,pl_bmasse,pl_rade\
+urlexo_pllist = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+distinct+\
+pl_name,disc_year,sy_dist,discoverymethod,pl_bmasse,pl_rade,pl_orbper,pl_eqt,pl_dens\
 +from+ps+&format=json"
 response = requests.get(urlexo_pllist)
 data_pllist = response.json()
@@ -56,7 +57,7 @@ for row in data_pllist:
 
 # Convertir en une liste de tuples pour MDDataTable
 data_table_tuple = [
-    (row['pl_name'], row['disc_year'], row['sy_dist'], row['discoverymethod'], row['pl_bmasse'], row['pl_rade'])
+    (row['pl_name'], row['disc_year'], row['sy_dist'], row['discoverymethod'], row['pl_bmasse'], row['pl_rade'], row['pl_orbper'], row['pl_eqt'], row['pl_dens'])
     for row in aggregated_data.values()
 ]
 #######################
@@ -65,7 +66,7 @@ data_table_tuple = [
 ### ECRAN2
 #######################
 #cle associés
-keys = ["pl_name","disc_year","sy_dist","discoverymethod","pl_bmasse","pl_rade"]
+keys = ["pl_name","disc_year","sy_dist","discoverymethod","pl_bmasse","pl_rade","pl_orbper","pl_eqt","pl_dense"]
 
 #conversion en liste de dict
 data_table_dict = [dict(zip(keys, tpl)) for tpl in data_table_tuple]
@@ -835,6 +836,7 @@ class Test(App):
         plt.xlabel("Méthodes de découverte", fontsize=16, fontweight='bold')
         plt.ylabel("nombre d'éléments", fontsize=16, fontweight='bold')
         plt.xticks(rotation=45 , fontsize=14, fontweight='bold')
+        plt.yticks( fontsize=14, fontweight='bold')
         plt.grid(axis='y', linestyle='--', alpha=0.7)
         plt.tight_layout()
 
@@ -871,7 +873,9 @@ class Test(App):
         plt.plot(liste_annee, liste_nb, marker='o', linestyle='-', color='b', label='Nombre par année')
         plt.title("Nombre d'exoplanètes par année", fontsize=18, fontweight='bold')
         plt.xlabel("Année", fontsize=16, fontweight='bold')
+        plt.xticks(rotation=45 , fontsize=14, fontweight='bold')
         plt.ylabel("Nombre", fontsize=16, fontweight='bold')
+        plt.yticks( fontsize=14, fontweight='bold')
         plt.grid(True)
         # plt.legend("nb/annee", fontsize=14)
         # plt.show()
@@ -929,7 +933,9 @@ class Test(App):
         #ajout detail graph
         plt.title("Masse de la planete VS Année de découverte", fontsize=18, fontweight='bold')
         plt.xlabel("Année de découverte (disc_year)", fontsize=16, fontweight='bold')
+        plt.xticks(rotation=45 , fontsize=14, fontweight='bold')
         plt.ylabel("Masse de la planete (pl_bmasse)", fontsize=16, fontweight='bold')
+        plt.yticks( fontsize=14, fontweight='bold')
         plt.grid(True, linestyle='--', alpha=0.6)
 
         #legende
@@ -1013,13 +1019,15 @@ class Test(App):
             plt.scatter(x_vals, y_vals, s=size, color=colors[method], label=method, alpha=0.7, edgecolors='w')
 
         # Ajouter des détails au graphique
-        plt.title("Masse vs Rayon des planètes", fontsize=16)
-        plt.xlabel("Masse de la planète (pl_bmasse)", fontsize=14)
-        plt.ylabel("Rayon de la planète (pl_rade)", fontsize=14)
+        plt.title("Masse vs Rayon des planètes", fontsize=18, fontweight='bold')
+        plt.xlabel("Masse de la planète (pl_bmasse)", fontsize=16, fontweight='bold')
+        plt.xticks(rotation=45 , fontsize=14, fontweight='bold')
+        plt.ylabel("Rayon de la planète (pl_rade)", fontsize=16, fontweight='bold')
+        plt.yticks( fontsize=14, fontweight='bold')
         plt.grid(True, linestyle='--', alpha=0.6)
 
         # Placer la légende sur la droite
-        plt.legend(title="Méthodes de découverte", fontsize=12, loc='center left', bbox_to_anchor=(1, 0.5))
+        plt.legend(title="Méthodes de découverte", fontsize=14, loc='upper left', bbox_to_anchor=(0, 1))
 
         # Ajuster l'espacement
         plt.tight_layout()
@@ -1064,6 +1072,7 @@ class Test(App):
         plt.xlabel("Méthodes de découverte", fontsize=16, fontweight='bold')
         plt.ylabel("nombre d'éléments", fontsize=16, fontweight='bold')
         plt.xticks(rotation=45 , fontsize=14, fontweight='bold')
+        plt.yticks( fontsize=14, fontweight='bold')
         plt.grid(axis='y', linestyle='--', alpha=0.7)
         plt.tight_layout()
 
@@ -1101,6 +1110,7 @@ class Test(App):
         plt.bar(labels, counts, color=colors, edgecolor='black')
         plt.title("Répartition  des méthodes de découverte", fontsize=18, fontweight='bold')
         plt.xlabel("Méthodes de découverte", fontsize=16, fontweight='bold')
+        plt.yticks( fontsize=14, fontweight='bold')
         plt.ylabel("nombre d'éléments", fontsize=16, fontweight='bold')
         plt.xticks(rotation=45 , fontsize=14, fontweight='bold')
         plt.grid(axis='y', linestyle='--', alpha=0.7)
