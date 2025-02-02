@@ -19,7 +19,7 @@ BoxLayout:
         
         Label:
             text: "Titre de l'App"
-            color: 1, 1, 1, 1
+            color: 1, 0, 0, 1
             canvas.before:
                 Color:
                     rgba: 0, 1, 1, 1  # Fond rouge clair
