@@ -22,7 +22,7 @@ BoxLayout:
             color: 1, 1, 1, 1
             canvas.before:
                 Color:
-                    rgba: 0.5, 1, 0.5, 1  # Fond vert clair
+                    rgba: 0, 1, 1, 1  # Fond rouge clair
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -60,16 +60,10 @@ class MyApp(App):
 
         # Liste complète des enregistrements (simulée)
         self.all_records = [
-            "Alice - 01",
-            "Bob - 02",
-            "Charlie - 03",
-            "David - 04",
-            "Emma - 05",
-            "Fiona - 06",
-            "George - 07",
-            "Hannah - 08",
-            "Ian - 09",
-            "Jack - 10"
+            "Alice - 01","Bob - 02","Charlie - 03","David - 04","Emma - 05","Fiona - 06","George - 07","Hannah - 08","Ian - 09","Jack - 10",
+            "Alice - 01","Bob - 02","Charlie - 03","David - 04","Emma - 05","Fiona - 06","George - 07","Hannah - 08","Ian - 09","Jack - 10",
+            "Alice - 01","Bob - 02","Charlie - 03","David - 04","Emma - 05","Fiona - 06","George - 07","Hannah - 08","Ian - 09","Jack - 10",
+            "Alice - 01","Bob - 02","Charlie - 03","David - 04","Emma - 05","Fiona - 06","George - 07","Hannah - 08","Ian - 09","Jack - 10",
         ]
 
         # Afficher la liste au démarrage
