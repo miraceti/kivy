@@ -5,14 +5,25 @@ from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 
 from kivy.uix.floatlayout import FloatLayout
-# from kivy_garden.matplotlib import FigureCanvasKivyAgg
-import matplotlib.pyplot as plt
+
+from kivy.app import App
+from kivy.lang import Builder
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.recycleview.views import RecycleDataViewBehavior
+from kivy.uix.recycleview import RecycleView
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
 
 # from urllib.request import urlopen
 # import json
 import requests
 # import datetime
-version= " (v010)"
+version= " (v011)"
 ##########################################
 #code de recuperation des données externes
 urlexo_pllist = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+distinct+pl_name,disc_year,sy_dist,discoverymethod,pl_bmasse,pl_rade\
@@ -52,7 +63,13 @@ keys = ["pl_name","disc_year","sy_dist","discoverymethod","pl_bmasse","pl_rade"]
 
 #conversion en liste de dict
 data_table_dict = [dict(zip(keys, tpl)) for tpl in data_table_tuple]
+# Filtrer les planètes avec une distance valide (non None)
+valid_planets = [planet for planet in data_table_dict if planet.get('sy_dist') is not None]
 
+# Trier les planètes par distance
+sorted_planets = sorted(valid_planets, key=lambda x: x['sy_dist'])
+print(len(sorted_planets))
+print("sorted_planets : ",sorted_planets[:10])
 #######################
 
 #######################
@@ -74,76 +91,31 @@ liste_annee, liste_nb = zip(*sorted_discovery_counts)
 liste_annee = list(liste_annee)
 liste_nb = list(liste_nb)
 
-#tracer graphique
-plt.figure(3, figsize=(10,6))
-plt.plot(liste_annee, liste_nb, marker='o', linestyle='-', color='b', label='Nombre par année')
-plt.title("Nombre d'exoplanètes par année")
-plt.xlabel("Année")
-plt.ylabel("Nombre")
-plt.grid(True)
-plt.legend()
-# plt.show()
+# liste des planete triées alphabetiquement
+data_nbpl_dist = list({(item['pl_name']) for item in sorted_planets})
+print("data_nbpl_dist : ",data_nbpl_dist[:10])
+# data_nbpl_sort = sorted(data_nbpl_dist)
+data_nbpl_sort = data_nbpl_dist
+print("data_nbpl_sort : ",data_nbpl_sort[:10])
 
+# Extraction des noms des planètes
+planet_names = [planet['pl_name'] for planet in sorted_planets]
 
+print("planetes_names : " ,planet_names[:10])
 #######################
 ### ECRAN4
 #######################
-# plt.figure(4)
-# data = {'a': np.arange(50),
-#         'c': np.random.randint(0, 50, 50),
-#         'd': np.random.randn(50)}
-# data['b'] = data['a'] + 10 * np.random.randn(50)
-# data['d'] = np.abs(data['d']) * 100
-
-# plt.scatter('a', 'b', c='c', s='d', data=data)
-# plt.xlabel('entry a')
-# plt.ylabel('entry b')
-# # plt.show()
 
 #extraire les données
 x = [item['disc_year'] for item in data_table_dict] #année de decouverte : X
 y = [item['pl_bmasse'] for item in data_table_dict] #masse de la planete : Y
 methods = [item['discoverymethod'] for item in data_table_dict]#methode de decouverte
 
-#taille des points
-size = 100
 
-#palette de couleurs
-unique_methods = list(set(methods))
-colors = {method: plt.cm.tab10(i) for i, method in enumerate(unique_methods)}
-
-#tracer graph
-plt.figure(4, figsize=(10,6))
-
-for method in unique_methods:
-    #filtrage data par methodes
-    x_vals = [x[i] for i in range(len(x)) if methods[i]== method]
-    y_vals = [y[i] for i in range(len(y)) if methods[i]== method]
-    plt.scatter(x_vals, y_vals, s=size, color=colors[method], label=method, alpha=0.7, edgecolors='w')
-
-#ajout detail graph
-plt.title("Masse de la planete VS Année de découverte", fontsize=16)
-plt.xlabel("Année de découverte (disc_year)", fontsize=14)
-plt.ylabel("Masse de la planete (pl_bmasse)", fontsize=14)
-plt.grid(True, linestyle='--', alpha=0.6)
-
-#legende
-plt.legend(title="Méthodes de découvertes", fontsize=12, loc='center left', bbox_to_anchor=(1, 0.5))
-
-#ajuster l'epacement
-plt.tight_layout()
 
 #######################
 ### ECRAN5
 #######################
-
-#pie
-# plt.style.use('dark_background')
-# labels = 'Frogs', 'Hogs', 'Dogs', 'logs'
-# sizes = [15, 30, 45, 10]
-# fig, ax = plt.subplots()
-# ax.pie(sizes, labels=labels)
-
 
 #########
 #comptage des ocurence
@@ -154,22 +126,6 @@ method_counts = Counter(discovery_methods)
 labels = list(method_counts.keys())
 counts = list(method_counts.values())
 
-#palette de couleurs pour les barres
-colors = plt.cm.Paired.colors[:len(labels)]
-
-#tracage
-plt.figure(5, figsize=(10,6))
-plt.bar(labels, counts, color=colors, edgecolor='black')
-plt.title("Répartition  des méthodes de découverte", fontsize=16)
-plt.xlabel("Méthodes de découverte", fontsize=14)
-plt.ylabel("nombre d'éléments", fontsize=14)
-plt.xticks(rotation=45 , fontsize=12)
-plt.grid(axis='y', linestyle='--', alpha=0.7)
-plt.tight_layout()
-
-
-fig_num=plt.gcf().number
-print(fig_num)
 ############################################################
 #########################################
 
@@ -349,6 +305,116 @@ KV = '''
                             MDLabel:
                                 id: cart10_text
                                 text: "ici10"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart11_text
+                                text: "ici11"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart12_text
+                                text: "ici12"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart13_text
+                                text: "ici13"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart14_text
+                                text: "ici14"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart15_text
+                                text: "ici15"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart16_text
+                                text: "ici16"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart17_text
+                                text: "ici17"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart18_text
+                                text: "ici18"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart19_text
+                                text: "ici19"
+                        MDCard:
+                            orientation: "vertical"
+                            padding: "8dp"
+                            size_hint: 1, None
+                            height: "210dp"
+                            elevation: 5
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel:
+                                id: cart20_text
+                                text: "ici20"
                                         
 
         MDBoxLayout:
@@ -385,31 +451,78 @@ KV = '''
 
             BoxLayout:
                 id: box3
-                size_hint_y: .8
+                size_hint_y: 1
                 pos_hint: {"center_y": .5}  # Remonter la table
                 #pos_hint: {"top": 1}
 
+                # ScrollView contenant la liste des enregistrements
+                ScrollView:
+                    size_hint_y: 0.90
+                    GridLayout:
+                        id: record_list
+                        cols: 1
+                        size_hint_y: None
+                        height: self.minimum_height  # Ajuste la hauteur automatiquement
+           
+
+         # Nouveau MDBoxLayout qui regroupe la recherche et les boutons de navigation
         MDBoxLayout:
-            size_hint_y: 0.1
+            orientation: "vertical"
+            size_hint_y: 0.2
             padding: dp(10)
             spacing: dp(10)
 
-            MDRaisedButton:
-                text: "Ecran precedent"
-                size_hint_x: 0.4
-                md_bg_color: 0.2, 0.2, 0.2, 1  # Gris foncé (RGBA)
-                text_color: 1, 1, 1, 1  # Blanc
-                font_name: "Roboto-Bold"  # Police en gras
-                on_release: root.manager.current = "DEMO2"
+            # Barre de recherche
+            BoxLayout:
+                size_hint_y: 0.4
+                TextInput:
+                    id: search_input
+                    hint_text: "Rechercher..."
+                    size_hint_x: 0.8
+                    multiline: False
+                    on_text: root.filter_records(self.text)
+                Button:
+                    text: "🔍"
+                    size_hint_x: 0.2
+                    on_press: root.filter_records(search_input.text)
 
-            MDRaisedButton:
-                text: "Ecran suivant"
-                size_hint_x: 0.4
-                md_bg_color: 0, 0, 0.5, 1  # Bleu foncé (RGBA)
-                text_color: 1, 1, 1, 1  # Blanc
-                font_name: "Roboto-Bold"  # Police en gras
-                on_release: root.manager.current = "DEMO4"
+            # Boutons de navigation
+            BoxLayout:
+                size_hint_y: 0.6
+                spacing: dp(10)
 
+                MDRaisedButton:
+                    text: "Ecran precedent"
+                    size_hint_x: 0.4
+                    md_bg_color: 0.2, 0.2, 0.2, 1  # Gris foncé
+                    text_color: 1, 1, 1, 1
+                    font_name: "Roboto-Bold"
+                    on_release: root.manager.current = "DEMO2"
+
+                MDRaisedButton:
+                    text: "Ecran suivant"
+                    size_hint_x: 0.4
+                    md_bg_color: 0, 0, 0.5, 1  # Bleu foncé
+                    text_color: 1, 1, 1, 1
+                    font_name: "Roboto-Bold"
+                    on_release: root.manager.current = "DEMO4"
+
+<RecordItem>:
+    size_hint_y: None
+    height: dp(50)
+
+    MDCard:
+        size_hint: 1, None
+        height: dp(50)
+        padding: dp(10)
+        md_bg_color: 0.2, 0.2, 0.2, 1  # Fond gris foncé
+        on_release: root.on_record_selected(root.text)
+
+        MDLabel:
+            text: root.text
+            color: 1, 1, 1, 1  # Texte blanc
+            halign: "center"
+                    
 <DEMO4>:
     MDBoxLayout:
         orientation: "vertical"
@@ -712,9 +825,9 @@ class DEMO1(Screen):
             check=True,
 
             column_data=[
-                ("pl_name", dp(30),self.sort_on_pl_name),
-                ("disc_year", dp(30)),
-                ("sy_dist", dp(30)),
+                ("pl_name", dp(60),self.sort_on_pl_name),
+                ("disc_year", dp(20)),
+                ("sy_dist", dp(20)),
                 ("discoverymethod", dp(30)),
                 ("pl_bmasse", dp(30)),
                 ("pl_rade", dp(30))
@@ -747,19 +860,15 @@ class DEMO1(Screen):
         return sorted_indices, sorted_data
     
 class DEMO2(Screen):
-    def on_enter(self, *args):
-        # Filtrer les planètes avec une distance valide (non None)
-        valid_planets = [planet for planet in data_table_dict if planet.get('sy_dist') is not None]
-        
-        # Trier les planètes par distance
-        sorted_planets = sorted(valid_planets, key=lambda x: x['sy_dist'])
-        
+    def on_enter(self, *args):        
         # Sélectionner les 10 plus proches
-        closest_planets = sorted_planets[:10]
+        closest_planets = sorted_planets[:20]
         # Liste des IDs des cartes
         card_ids = [
             'cart1_text', 'cart2_text', 'cart3_text', 'cart4_text', 'cart5_text',
-            'cart6_text', 'cart7_text', 'cart8_text', 'cart9_text', 'cart10_text'
+            'cart6_text', 'cart7_text', 'cart8_text', 'cart9_text', 'cart10_text',
+            'cart11_text', 'cart12_text', 'cart13_text', 'cart14_text', 'cart15_text',
+            'cart16_text', 'cart17_text', 'cart18_text', 'cart19_text', 'cart20_text'
         ]
 
         # Mettre à jour les cartes avec les données des planètes
@@ -773,16 +882,100 @@ class DEMO2(Screen):
             self.ids[card_ids[i]].text = f"Nom: {pl_name}\nDistance: {sy_dist:.2f} Parsecs\nRayon: {str(pl_rade)} Kms\nMasse: {str(pl_bmasse)} Terre\nMethode: {discoverymethod}"
 
 class DEMO3(Screen):
-    def __init__ (self, **kwargs):
-        super().__init__(**kwargs)
+    # def __init__ (self, **kwargs):
+    #     super().__init__(**kwargs)
         
-        box = self.ids.box3
+        # box = self.ids.box3
         # box.add_widget(FigureCanvasKivyAgg(plt.figure(3)))
-        
+    def on_enter(self,*args):
+        # self.root = Builder.load_string(KV)
+
+        # Liste complète des enregistrements (simulée)
+        # self.all_records = [
+        #     "Alice - 01","Bob - 02","Charlie - 03","David - 04","Emma - 05","Fiona - 06","George - 07","Hannah - 08","Ian - 09","Jack - 10",
+        #     "Alice - 01","Bob - 02","Charlie - 03","David - 04","Emma - 05","Fiona - 06","George - 07","Hannah - 08","Ian - 09","Jack - 10",
+        #     "Alice - 01","Bob - 02","Charlie - 03","David - 04","Emma - 05","Fiona - 06","George - 07","Hannah - 08","Ian - 09","Jack - 10",
+        #     "Alice - 01","Bob - 02","Charlie - 03","David - 04","Emma - 05","Fiona - 06","George - 07","Hannah - 08","Ian - 09","Jack - 10",
+        # ]
+
+        self.all_records = planet_names[:500]
+        # Afficher la liste au démarrage
+        self.filter_records("")
+
+        # Remplir la liste avec les enregistrements
+        self.update_list(self.all_records[:500])
+
+        # return self.root
+
+
+    def update_list(self, records):
+        """Met à jour l'affichage dans le RecycleView"""
+        self.ids.record_list.data = [{"text": r, "size_hint_y": None, "height": 40} for r in records]
+
+    def filter_records2(self, query):
+        """Filtre la liste en fonction de la recherche"""
+        filtered = [r for r in self.all_records if query.lower() in r.lower()]
+        self.update_list(filtered if filtered else ["Aucun résultat trouvé"])
+
+    def filter_records(self, query):
+        """Filtre les enregistrements et les affiche dans le ScrollView"""
+        record_list = self.ids.record_list
+        record_list.clear_widgets()  # Efface les anciens résultats
+
+        # Filtrage des enregistrements (insensible à la casse)
+        filtered = [r for r in self.all_records if query.lower() in r.lower()]
+
+        # Si aucun résultat, afficher "Aucun résultat trouvé"
+        if not filtered:
+            record_list.add_widget(
+                Label(
+                    text="Aucun résultat trouvé",
+                    size_hint_y=None,
+                    height=40,
+                    color=(1, 0, 0, 1),  # Rouge
+                    bold=True
+                )
+            )
+            return
+
+        # Ajouter les résultats filtrés sous forme de boutons cliquables
+        for record in filtered:
+            btn = Button(
+                text=record,
+                size_hint_y=None,
+                height=50,
+                on_press=self.on_record_selected  # Appel de la fonction quand on clique
+            )
+            record_list.add_widget(btn)
+
+    def on_record_selected(self, instance):
+        """Action lorsqu'un enregistrement est cliqué"""
+        print(f"Enregistrement sélectionné : {instance.text}")  # Affichage console
+
+        """Affiche une popup avec le texte sélectionné"""
+        self.show_popup(instance.text)
+
+        # Tu peux ici ouvrir un détail, afficher une popup, etc.    
     # def save_it(self):
     #     name = self.ids.namer.text
     #     if name:
     #         plt.savefig(name)
+
+    def on_record_selected1(self, record):
+        """Affiche une popup quand une ligne est cliquée"""
+        self.show_popup(record)
+
+    def show_popup(self, record):
+        """Crée et affiche une popup"""
+        dialog = MDDialog(
+            title="Détails de l'enregistrement",
+            text=f"Vous avez sélectionné : {record}",
+            buttons=[
+                MDFlatButton(text="Fermer", on_release=lambda x: dialog.dismiss())
+            ]
+        )
+        dialog.open()
+
 
 class DEMO4(Screen):
     def __init__ (self, **kwargs):
