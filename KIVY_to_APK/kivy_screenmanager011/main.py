@@ -449,32 +449,13 @@ KV = '''
                 halign: "center"
                 pos_hint: {"center_y": .95}  # Remonter le texte vers le haut
 
+            # Barre de recherche placée sous le Label
             BoxLayout:
-                id: box3
-                size_hint_y: 1
-                pos_hint: {"center_y": .5}  # Remonter la table
-                #pos_hint: {"top": 1}
+                size_hint_y: 0.1
+                pos_hint: {"center_x": 0.5, "top": 0.95}  # Placé juste en dessous du label
+                padding: dp(10)
+                spacing: dp(10)
 
-                # ScrollView contenant la liste des enregistrements
-                ScrollView:
-                    size_hint_y: 0.90
-                    GridLayout:
-                        id: record_list
-                        cols: 1
-                        size_hint_y: None
-                        height: self.minimum_height  # Ajuste la hauteur automatiquement
-           
-
-         # Nouveau MDBoxLayout qui regroupe la recherche et les boutons de navigation
-        MDBoxLayout:
-            orientation: "vertical"
-            size_hint_y: 0.2
-            padding: dp(10)
-            spacing: dp(10)
-
-            # Barre de recherche
-            BoxLayout:
-                size_hint_y: 0.4
                 TextInput:
                     id: search_input
                     hint_text: "Rechercher..."
@@ -486,7 +467,30 @@ KV = '''
                     size_hint_x: 0.2
                     on_press: root.filter_records(search_input.text)
 
-            # Boutons de navigation
+            BoxLayout:
+                id: box3
+                size_hint_y: 1
+                #pos_hint: {"center_y": .5}  # Ajuste la position de la table
+                pos_hint: {"center_y": .4}  # Descend la table un peu plus bas
+
+                # ScrollView contenant la liste des enregistrements
+                ScrollView:
+                    #size_hint_y: 0.90
+                    size_hint_y: 0.95  # Réduction de la hauteur pour libérer de l'espace
+                    pos_hint: {"center_y": 0.5}  # Descendre légèrement
+                    GridLayout:
+                        id: record_list
+                        cols: 1
+                        size_hint_y: None
+                        height: self.minimum_height  # Ajuste la hauteur automatiquement
+
+        # Boutons de navigation (restent en bas)
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint_y: 0.2
+            padding: dp(10)
+            spacing: dp(10)
+
             BoxLayout:
                 size_hint_y: 0.6
                 spacing: dp(10)
@@ -506,23 +510,7 @@ KV = '''
                     text_color: 1, 1, 1, 1
                     font_name: "Roboto-Bold"
                     on_release: root.manager.current = "DEMO4"
-
-<RecordItem>:
-    size_hint_y: None
-    height: dp(50)
-
-    MDCard:
-        size_hint: 1, None
-        height: dp(50)
-        padding: dp(10)
-        md_bg_color: 0.2, 0.2, 0.2, 1  # Fond gris foncé
-        on_release: root.on_record_selected(root.text)
-
-        MDLabel:
-            text: root.text
-            color: 1, 1, 1, 1  # Texte blanc
-            halign: "center"
-                    
+         
 <DEMO4>:
     MDBoxLayout:
         orientation: "vertical"
@@ -879,7 +867,7 @@ class DEMO2(Screen):
             pl_bmasse = planet.get('pl_bmasse', 'Unknown')
             discoverymethod = planet.get('discoverymethod', 'Unknown')
             # Mettre à jour le texte de la carte
-            self.ids[card_ids[i]].text = f"Nom: {pl_name}\nDistance: {sy_dist:.2f} Parsecs\nRayon: {str(pl_rade)} Kms\nMasse: {str(pl_bmasse)} Terre\nMethode: {discoverymethod}"
+            self.ids[card_ids[i]].text = f"Nom: {pl_name}\nDistance: {sy_dist:.2f} Pc\nRayon: {str(pl_rade)} Kms\nMasse: {str(pl_bmasse)} Terre\nMethode: {discoverymethod}"
 
 class DEMO3(Screen):
     # def __init__ (self, **kwargs):
