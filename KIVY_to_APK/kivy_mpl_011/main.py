@@ -567,41 +567,75 @@ class Test(App):
         # Liste des planètes
         planets = data_table_dict
 
-        # Convertir la liste en DataFrame
-        df = pd.DataFrame(planets)
+        # Filtrer les planètes ayant une valeur 'none' ou 1 dans la colonne 'pl_bmasse'
+        filtered_planets0 = [
+            planet for planet in planets
+            if planet['pl_bmasse'] not in [None,'none', '1', 1] 
+        ]
+
+        filtered_planets = [
+            planet for planet in filtered_planets0
+            if  1 < float(planet['pl_bmasse']) < 100
+        ]
 
         # Filtrer les planètes ayant une valeur 'none' ou 1 dans la colonne 'pl_bmasse'
-        df_filtered = df[(df['pl_bmasse'] != 'none') & (df['pl_bmasse'] != 1) & (df['pl_bmasse'] > 0) & (df['pl_bmasse'] < 100)].copy()
-        df_filtered_moins1 = df[(df['pl_bmasse'] != 'none') &  (df['pl_bmasse'] > 0) & (df['pl_bmasse'] < 100)].copy()
+        filtered_planets_avec_10 = [
+            planet for planet in planets
+            if planet['pl_bmasse'] not in [None,'none'] 
+        ]
 
-        # Convertir 'pl_bmasse' en type numérique si nécessaire
-        df_filtered.loc[:, 'pl_bmasse'] = pd.to_numeric(df_filtered['pl_bmasse'], errors='coerce')
-        df_filtered_moins1.loc[:, 'pl_bmasse'] = pd.to_numeric(df_filtered_moins1['pl_bmasse'], errors='coerce')
+        filtered_planets_avec_1 = [
+            planet for planet in filtered_planets_avec_10
+            if  0 < float(planet['pl_bmasse']) < 100
+        ]
+
+        # Extraire les masses
+        masses = [float(planet['pl_bmasse']) for planet in filtered_planets]
+        masses_avec_1 = [float(planet['pl_bmasse']) for planet in filtered_planets_avec_1]
 
         # Définir les tranches
         bins = [0, 2, 4, 6, 8, 10]
         labels = ['0-2', '2-4', '4-6', '6-8', '8-10']
 
         # Diviser les données en tranches
-        df_filtered.loc[:, 'mass_bin'] = pd.cut(df_filtered['pl_bmasse'], bins=bins, labels=labels, include_lowest=True)
-        df_filtered_moins1.loc[:, 'mass_bin1'] = pd.cut(df_filtered_moins1['pl_bmasse'], bins=bins, labels=labels, include_lowest=True)
+        mass_bins = []
+        for mass in masses:
+            for j in range(len(bins) - 1):
+                if bins[j] <= mass < bins[j + 1]:
+                    mass_bins.append(labels[j])
+                    break
 
-        # Compter le nombre de planètes dans chaque tranche
-        bin_counts = df_filtered['mass_bin'].value_counts().sort_index()
-        bin_counts_moins1 = df_filtered_moins1['mass_bin1'].value_counts().sort_index()
+        mass_bins_avec_1 = []
+        for mass in masses_avec_1:
+            for j in range(len(bins) - 1):
+                if bins[j] <= mass < bins[j + 1]:
+                    mass_bins_avec_1.append(labels[j])
+                    break
+
+        # Compter les occurrences de chaque tranche
+        bin_counts = Counter(mass_bins)
+        bin_counts_avec_1 = Counter(mass_bins_avec_1)
+
+        # Trier les tranches pour un graphique bien tracé
+        sorted_bins = sorted(bin_counts.keys(), key=lambda x: int(x.split('-')[0]))
+        sorted_counts = [bin_counts[bin] for bin in sorted_bins]
+
+        # Trier les tranches pour un graphique bien tracé
+        sorted_bins_avec_1 = sorted(bin_counts_avec_1.keys(), key=lambda x: int(x.split('-')[0]))
+        sorted_counts_avec_1 = [bin_counts_avec_1[bin] for bin in sorted_bins_avec_1]
 
         # Créer une figure avec deux sous-graphiques
         fig, axs = plt.subplots(2, 1, figsize=(10, 10), sharex=False)
 
         # Tracer le premier graphique
-        # axs[0].plot(bin_counts.index, bin_counts.values, marker='o', linestyle='-', color='b', label='inclue masse = 1T')
-        # axs[0].set_ylabel("Nombre de planètes")
-        # axs[0].set_title("Distribution du nombre de planètes par tranches de masse (inclue masse = 1T)")
-        # axs[0].legend()
-        # axs[0].grid()
+        axs[0].plot(sorted_bins, sorted_counts, marker='o', linestyle='-', color='b', label='inclue masse = 1T')
+        axs[0].set_ylabel("Nombre de planètes")
+        axs[0].set_title("Distribution du nombre de planètes par tranches de masse (inclue masse = 1T)")
+        axs[0].legend()
+        axs[0].grid()
 
         # Tracer le second graphique (identique au premier)
-        axs[1].plot(bin_counts_moins1.index, bin_counts_moins1.values, marker='o', linestyle='-', color='r', label='exclue masse = 1T')
+        axs[1].plot(sorted_bins_avec_1, sorted_counts_avec_1, marker='o', linestyle='-', color='r', label='exclue masse = 1T')
         axs[1].set_xlabel("Tranches de masse (en M_Terre)")
         axs[1].set_ylabel("Nombre de planètes")
         axs[1].set_title("Distribution du nombre de planètes par tranches de masse (exclue masse = 1T)")
