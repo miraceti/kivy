@@ -625,33 +625,46 @@ class Test(App):
         sorted_counts_avec_1 = [bin_counts_avec_1[bin] for bin in sorted_bins_avec_1]
 
         # Créer une figure avec deux sous-graphiques
-        fig, axs = plt.subplots(2, 1, figsize=(10, 10), sharex=False)
-
+        fig1 = plt.figure()
+        # set height ratios for subplots
+        gs = gridspec.GridSpec(2, 1, height_ratios=[1, 1]) 
+        
+        # the first subplot
+        ax0 = plt.subplot(gs[0])
+        
         # Tracer le premier graphique
-        axs[0].plot(sorted_bins, sorted_counts, marker='o', linestyle='-', color='b', label='inclue masse = 1T')
-        axs[0].set_ylabel("Nombre de planètes")
-        axs[0].set_title("Distribution du nombre de planètes par tranches de masse (inclue masse = 1T)")
-        axs[0].legend()
-        axs[0].grid()
+        ax0.plot(sorted_bins, sorted_counts, marker='o', linestyle='-', color='b', label='inclue masse = 1T')
+        ax0.set_ylabel("Nombre de planètes")
+        ax0.set_title("Distribution du nombre de planètes par tranches de masse (inclue masse = 1T)")
+        ax0.legend()
+        ax0.grid()
 
         # Tracer le second graphique (identique au premier)
-        axs[1].plot(sorted_bins_avec_1, sorted_counts_avec_1, marker='o', linestyle='-', color='r', label='exclue masse = 1T')
-        axs[1].set_xlabel("Tranches de masse (en M_Terre)")
-        axs[1].set_ylabel("Nombre de planètes")
-        axs[1].set_title("Distribution du nombre de planètes par tranches de masse (exclue masse = 1T)")
-        axs[1].legend()
-        axs[1].grid()
+        ax1 = plt.subplot(gs[1], sharex = ax0)
+        ax1.plot(sorted_bins_avec_1, sorted_counts_avec_1, marker='o', linestyle='-', color='r', label='exclue masse = 1T')
+        ax1.set_xlabel("Tranches de masse (en M_Terre)")
+        ax1.set_ylabel("Nombre de planètes")
+        ax1.set_title("Distribution du nombre de planètes par tranches de masse (exclue masse = 1T)")
+        ax1.legend()
+        ax1.grid()
+
+         # put legend on first subplot
+        # ax0.legend((line0, line1), ('red line', 'blue line'), loc='lower left')
+        
+        # remove vertical gap between subplots
+        plt.subplots_adjust(hspace=.0)
 
         # Ajuster l'espacement entre les graphiques
-        plt.tight_layout()
+        # plt.tight_layout()
 
+        # fig1=plt.gcf()
         # Afficher les graphiques
         #plt.show()
 
         ###########
                 
         screen1=self.graph_app.ids.sm.get_screen('screen1')
-        screen1.figure_wgt.figure = fig
+        screen1.figure_wgt.figure = fig1
         screen1.figure_wgt.cursor_xaxis_formatter = FormatStrFormatter('%.1f') 
         screen1.figure_wgt.cursor_yaxis_formatter = FormatStrFormatter('%.1f') 
         
