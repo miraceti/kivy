@@ -657,7 +657,7 @@ class Test(App):
         # Ajuster l'espacement entre les graphiques
         # plt.tight_layout()
 
-        # fig1=plt.gcf()
+        fig1=plt.gcf()
         # Afficher les graphiques
         #plt.show()
 
