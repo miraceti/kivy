@@ -541,27 +541,80 @@ class Test(App):
 # =============================================================================
 #         figure 1 - screen1
 # =============================================================================
-        x = np.linspace(0, 2 * np.pi, 400)
-        y = np.sin(x ** 2)
+        # x = np.linspace(0, 2 * np.pi, 400)
+        # y = np.sin(x ** 2)
         
-        fig, axs = plt.subplots(2, 2)
-        axs[0, 0].plot(x, y)
-        axs[0, 0].set_title('Axis [0, 0]')
-        axs[0, 1].plot(x, y, 'tab:orange')
-        axs[0, 1].set_title('Axis [0, 1]')
-        axs[1, 0].plot(x, -y, 'tab:green')
-        axs[1, 0].set_title('Axis [1, 0]')
-        axs[1, 1].plot(x, -y, 'tab:red')
-        axs[1, 1].set_title('Axis [1, 1]')
+        # fig, axs = plt.subplots(2, 2)
+        # axs[0, 0].plot(x, y)
+        # axs[0, 0].set_title('Axis [0, 0]')
+        # axs[0, 1].plot(x, y, 'tab:orange')
+        # axs[0, 1].set_title('Axis [0, 1]')
+        # axs[1, 0].plot(x, -y, 'tab:green')
+        # axs[1, 0].set_title('Axis [1, 0]')
+        # axs[1, 1].plot(x, -y, 'tab:red')
+        # axs[1, 1].set_title('Axis [1, 1]')
         
-        axs[1, 1].set_xlim(2,10)
+        # axs[1, 1].set_xlim(2,10)
         
-        for ax in axs.flat:
-            ax.set(xlabel='x-label', ylabel='y-label')
+        # for ax in axs.flat:
+        #     ax.set(xlabel='x-label', ylabel='y-label')
 
-        # Hide x labels and tick labels for top plots and y ticks for right plots.
-        for ax in axs.flat:
-            ax.label_outer()
+        # # Hide x labels and tick labels for top plots and y ticks for right plots.
+        # for ax in axs.flat:
+        #     ax.label_outer()
+
+        ###########
+        # Liste des planètes
+        planets = data_table_dict
+
+        # Convertir la liste en DataFrame
+        df = pd.DataFrame(planets)
+
+        # Filtrer les planètes ayant une valeur 'none' ou 1 dans la colonne 'pl_bmasse'
+        df_filtered = df[(df['pl_bmasse'] != 'none') & (df['pl_bmasse'] != 1) & (df['pl_bmasse'] > 0) & (df['pl_bmasse'] < 100)].copy()
+        df_filtered_moins1 = df[(df['pl_bmasse'] != 'none') &  (df['pl_bmasse'] > 0) & (df['pl_bmasse'] < 100)].copy()
+
+        # Convertir 'pl_bmasse' en type numérique si nécessaire
+        df_filtered.loc[:, 'pl_bmasse'] = pd.to_numeric(df_filtered['pl_bmasse'], errors='coerce')
+        df_filtered_moins1.loc[:, 'pl_bmasse'] = pd.to_numeric(df_filtered_moins1['pl_bmasse'], errors='coerce')
+
+        # Définir les tranches
+        bins = [0, 2, 4, 6, 8, 10]
+        labels = ['0-2', '2-4', '4-6', '6-8', '8-10']
+
+        # Diviser les données en tranches
+        df_filtered.loc[:, 'mass_bin'] = pd.cut(df_filtered['pl_bmasse'], bins=bins, labels=labels, include_lowest=True)
+        df_filtered_moins1.loc[:, 'mass_bin1'] = pd.cut(df_filtered_moins1['pl_bmasse'], bins=bins, labels=labels, include_lowest=True)
+
+        # Compter le nombre de planètes dans chaque tranche
+        bin_counts = df_filtered['mass_bin'].value_counts().sort_index()
+        bin_counts_moins1 = df_filtered_moins1['mass_bin1'].value_counts().sort_index()
+
+        # Créer une figure avec deux sous-graphiques
+        fig, axs = plt.subplots(2, 1, figsize=(10, 10), sharex=False)
+
+        # Tracer le premier graphique
+        # axs[0].plot(bin_counts.index, bin_counts.values, marker='o', linestyle='-', color='b', label='inclue masse = 1T')
+        # axs[0].set_ylabel("Nombre de planètes")
+        # axs[0].set_title("Distribution du nombre de planètes par tranches de masse (inclue masse = 1T)")
+        # axs[0].legend()
+        # axs[0].grid()
+
+        # Tracer le second graphique (identique au premier)
+        axs[1].plot(bin_counts_moins1.index, bin_counts_moins1.values, marker='o', linestyle='-', color='r', label='exclue masse = 1T')
+        axs[1].set_xlabel("Tranches de masse (en M_Terre)")
+        axs[1].set_ylabel("Nombre de planètes")
+        axs[1].set_title("Distribution du nombre de planètes par tranches de masse (exclue masse = 1T)")
+        axs[1].legend()
+        axs[1].grid()
+
+        # Ajuster l'espacement entre les graphiques
+        plt.tight_layout()
+
+        # Afficher les graphiques
+        #plt.show()
+
+        ###########
                 
         screen1=self.graph_app.ids.sm.get_screen('screen1')
         screen1.figure_wgt.figure = fig
